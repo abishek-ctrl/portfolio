@@ -17,6 +17,7 @@ body {
 }
 .header nav {
     padding: 0 20px;
+    text-align: right;
 }
 .header nav a {
     color: #ffffff;
@@ -33,4 +34,11 @@ body {
 }
 .content p {
     font-size: 1.2em;
+}
+.sections {
+    text-align: center;
+    padding: 20px 0;
+}
+.sections div {
+    margin-bottom: 20px;
 }
