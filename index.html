@@ -1,35 +1,94 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Abishek M</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-</head>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Abishek M</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+        <style>
+            h1 {
+                font-size: 3em;
+            }
+            .lead {
+                animation: fadeInOut 2s infinite;
+            }
+            @keyframes fadeInOut {
+                0% {opacity: 1;}
+                50% {opacity: 0.5;}
+                100% {opacity: 1;}
+            }
+        </style>
+    </head>
 <body>
-    <header class="header">
-        <h1><i class="icon">Icon</i></h1>
-        <nav>
-            <a href="#about">About</a>
-            <a href="#projects">Projects</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </header>
-    <div class="content">
-        <h2>Abishek M</h2>
-        <p>ML Developer</p>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#"><img src="logo.png" alt="Logo" width="30" height="30"></a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="container py-4 d-flex flex-column align-items-center justify-content-center" style="height: 100vh;">
+        <h1>Abishek M</h1>
+        <p class="lead">Machine Learning Developer</p>
+    </main>
+    <section id="projects" class="container py-4">
+        <h2 class="text-center">Projects</h2>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">GPS Based Toll Tax Collection</h3>
+                        <p class="card-text">Automates the process of calculating the toll needed to be paid for the distance traveled...</p>
+                        <a href="https://github.com/sureshkonar/GeoToll-Link" target="_blank" class="btn btn-primary">View on GitHub</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mt-4 mt-lg-0">
+                    <div class="card-body">
+                        <h3 class="card-title">RAG Based Document QnA App</h3>
+                        <p class="card-text">A streamlit application based on Retrieval Augmented Generation using Open-Source LLMs...</p>
+                        <a href="https://github.com/abishek-ctrl/pdf-chat-langchain" target="_blank" class="btn btn-primary">View on GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="contact" class="container py-4">
+        <h2 class="text-center">Contact</h2>
+        <div class="row">
+        <div class="col-lg-3 text-center">
+            <i class="fas fa-envelope fa-2x"></i>
+            <p><a href="mailto:amabishek02@gmail.com">amabishek02@gmail.com</a></p>
+        </div>
+        <div class="col-lg-3 text-center">
+            <i class="fab fa-linkedin fa-2x"></i>
+            <p><a href="https://www.linkedin.com/in/abishekcodes/" target="_blank">LinkedIn</a></p>
+        </div>
+        <div class="col-lg-3 text-center">
+            <i class="fas fa-code fa-2x"></i>
+            <p><a href="https://leetcode.com/abishek-ctrl/" target="_blank">LeetCode</a></p>
+        </div>
+        <div class="col-lg-3 text-center">
+            <i class="fab fa-twitter fa-2x"></i>
+            <p><a href="https://twitter.com/abishekcodes" target="_blank">Twitter</a></p>
+        </div>
     </div>
-    <div class="sections">
-        <div id="about">
-            <h2>About</h2>
-            <p>to be edited</p>
-        </div>
-        <div id="projects">
-            <h2>Projects</h2>
-            <p>to be edited</p>
-        </div>
-        <div id="contact">
-            <h2>Contact</h2>
-            <p>to be edited</p>
-        </div>
+</section>
+<section class="container py-4">
+    <h2 class="text-center">Support Me</h2>
+    <div class="text-center">
+        <a href="https://www.buymeacoffee.com/abishek" target="_blank" class="btn btn-primary">Buy Me a Coffee</a>
     </div>
+</section>
+<footer class="footer mt-auto py-3 bg-dark text-white">
+    <div class="container text-center">
+        <span>&copy; 2022 Abishek M</span>
+    </div>
+</footer>
 </body>
 </html>
