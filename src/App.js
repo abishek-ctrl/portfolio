@@ -30,6 +30,12 @@ const portfolioData = {
   ],
   projects: [
     {
+      title: "PII-Masker",
+      description: "A tool to mask Personally Identifiable Information (PII) from text, ensuring data privacy and compliance. This project demonstrates advanced NLP techniques for identifying and redacting sensitive information.",
+      tags: ["Python", "PII", "NLP", "CLI"],
+      link: "https://github.com/abishek-ctrl/PII-Masker"
+    },
+    {
       title: "LiteVec - Lightweight Vector Database",
       description: "A high-performance vector database built from scratch, supporting multiple ANN backends like FAISS and HNSWlib. Features metadata-aware semantic search, persistent indexing, and a CLI for easy data ingestion, achieving ~250ms query latency on a 1000+ vector corpus.",
       tags: ["Python", "FAISS", "HNSWlib", "Vector Search", "CLI"],
