@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Github, Linkedin, Mail, ArrowUp, Menu, X } from 'lucide-react';
+import { Github, Linkedin, Mail, ArrowUp, Menu, X, ArrowRight, Building, MapPin, Calendar } from 'lucide-react';
 
-// --- Data Object: All your portfolio content is here for easy updates ---
+// --- Data Object ---
 const portfolioData = {
   name: "Abishek M",
-  title: "AI & Machine Learning Engineer",
+  degree: "Integrated Masters of Technology in Artificial Intelligence",
+  roles: ["Machine Learning Engineer", "Backend Developer", "Data Scientist"],
   email: "amabishek02@gmail.com",
   linkedin: "https://linkedin.com/in/abishekcodes",
   github: "https://github.com/abishek-ctrl",
+  kaggle: "https://www.kaggle.com/abishekak",
+  huggingface: "https://huggingface.co/abishekcodes",
   about: "A passionate and results-driven Computer Science Engineer specializing in Artificial Intelligence and Machine Learning. With hands-on experience in developing and deploying scalable data science solutions, I thrive on building intelligent systems that solve real-world problems. My expertise spans from creating advanced RAG pipelines to architecting multi-agent simulations, always with a focus on performance, efficiency, and innovation.",
   skills: [
     { name: "AI/ML", items: ["Large Language Models", "PyTorch", "TensorFlow", "Scikit-learn", "Langchain", "Deep Learning", "NLP", "Computer Vision"] },
@@ -16,75 +19,95 @@ const portfolioData = {
   ],
   experience: [
     {
-      role: "Data Science Intern",
-      company: "Genpact",
+      role: "Data Scientist Intern",
+      company: "Genpact India",
       date: "July 2024 - Dec 2024",
+      location: "India - Remote",
       description: "Designed and enhanced a Multimodal RAG pipeline, improving data retrieval accuracy by 15%. Validated pipeline responses using frameworks like RAGAS and researched model deployment on Azure ML, reducing infrastructure costs."
     },
     {
-      role: "Software Developer Intern",
+      role: "AI Engineer Intern",
       company: "Mintosh Advisory",
       date: "Jan 2024 - April 2024",
+      location: "Bengaluru - Remote",
       description: "Led the development of a digital avatar platform using LLMs. Implemented a scalable FastAPI backend, reducing latency and inference costs by 16%. Conducted experiments with Llama models to improve accuracy by 12%."
     }
   ],
   projects: [
     {
-      title: "PII-Masker",
-      description: "A tool to mask Personally Identifiable Information (PII) from text, ensuring data privacy and compliance. This project demonstrates advanced NLP techniques for identifying and redacting sensitive information.",
-      tags: ["Python", "PII", "NLP", "CLI"],
-      link: "https://github.com/abishek-ctrl/PII-Masker"
+      title: "Agentic RAG Using LangGraph",
+      description: "A Langgraph-based LLM application allowing users to upload documents (PDF/DOCX) and ask questions. It leverages an agentic RAG workflow for accurate, context-aware answers, handling complex multi-step reasoning.",
+      link: "https://github.com/abishek-ctrl/Agentic-RAG-Thru-Langgraph"
     },
     {
-      title: "LiteVec - Lightweight Vector Database",
-      description: "A high-performance vector database built from scratch, supporting multiple ANN backends like FAISS and HNSWlib. Features metadata-aware semantic search, persistent indexing, and a CLI for easy data ingestion, achieving ~250ms query latency on a 1000+ vector corpus.",
-      tags: ["Python", "FAISS", "HNSWlib", "Vector Search", "CLI"],
-      link: "https://github.com/abishek-ctrl/litevec"
+      title: "Read-Viz: Agentic Paper Visualizer",
+      description: "An agentic application that transforms dense PDFs into interactive visualizations. Using Google's Gemini AI, it extracts summaries, tables, and images, presenting them in an intuitive graph-based interface.",
+      link: "https://github.com/abishek-ctrl/read-viz"
     },
     {
-      title: "Multi-Agent Security Operations Simulation",
-      description: "A Red Team vs. Blue Team simulation using Ollama and real-world network datasets. Four autonomous agents perform threat generation, classification, and mitigation, leveraging a FAISS-based threat memory to improve response reliability against DDoS and PortScan attacks.",
-      tags: ["Multi-Agent Systems", "Ollama", "Cybersecurity", "FAISS", "Python"],
-      link: "https://github.com/abishek-ctrl/multiagent-soc"
+      title: "GeoToll - GPS Based Toll System",
+      description: "Introduces GPS technology for toll collection via an On-Board Unit (OBU). It calculates precise toll fees based on distance traveled and automates collection, eliminating the need for physical toll plazas and reducing traffic.",
+      link: "https://github.com/abishek-ctrl/GeoToll-Link"
+    },
+    {
+      title: "Lung Cancer Detection with ML",
+      description: "This repository contains code for detecting lung cancer using various machine learning models. The project evaluates Linear & Logistic Regression, Gradient Boosting, KNN, Decision Tree, Random Forest, CATBoost, and XGBoost classifiers.",
+      link: "https://github.com/abishek-ctrl/Lung-Cancer-Detection-Thru-ML"
     }
   ]
 };
 
-// --- Helper function for smooth scrolling ---
+
+// --- Helper Functions ---
 const scrollToSection = (ref) => {
     if (ref.current) {
         ref.current.scrollIntoView({ behavior: 'smooth' });
     }
 };
 
-// --- Glassmorphism Card Component ---
-const GlassCard = ({ children, className = '' }) => (
-  <div className={`bg-slate-800/40 backdrop-blur-lg border border-slate-400/20 shadow-lg rounded-2xl p-6 sm:p-8 ${className}`}>
-    {children}
-  </div>
-);
+// --- UI Components ---
 
-// --- Header/Navigation Component ---
-const Header = ({ sections }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
+const InteractiveMonogram = () => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const handleScroll = () => {
-        const scrollPosition = window.scrollY + window.innerHeight / 2.5;
-        let currentSection = 'home';
-        for (const sectionId in sections) {
-            const sectionElement = sections[sectionId].current;
-            if (sectionElement && scrollPosition >= sectionElement.offsetTop) {
-                currentSection = sectionId;
-            }
-        }
-        setActiveSection(currentSection);
+    const handleMouseMove = (event) => {
+      const { clientX, clientY, currentTarget } = event;
+      const { left, top, width, height } = currentTarget.getBoundingClientRect();
+      const x = (clientX - left - width / 2) / 25;
+      const y = (clientY - top - height / 2) / 25;
+      setMousePos({ x, y });
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [sections]);
+    const target = document.getElementById('monogram-container');
+    target.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      target.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  return (
+    <div id="monogram-container" className="w-64 h-64 md:w-80 md:h-80 relative flex items-center justify-center cursor-pointer">
+        <div 
+            className="absolute text-[12rem] md:text-[14rem] font-serif text-gray-700 transition-transform duration-200 ease-out"
+            style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}
+        >
+            AK
+        </div>
+        <div 
+            className="absolute text-[12rem] md:text-[14rem] font-serif text-gray-500 transition-transform duration-200 ease-out"
+            style={{ transform: `translate(${-mousePos.x}px, ${-mousePos.y}px)` }}
+        >
+            AK
+        </div>
+        <div className="absolute text-[12rem] md:text-[14rem] font-serif text-white">AK</div>
+    </div>
+  )
+}
+
+const Header = ({ sections }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleNavClick = (ref) => {
     scrollToSection(ref);
@@ -93,166 +116,197 @@ const Header = ({ sections }) => {
 
   const navLinks = (
     <>
-      <button onClick={() => handleNavClick(sections.about)} className={`px-3 py-2 rounded-md text-sm font-medium ${activeSection === 'about' ? 'text-cyan-400' : 'text-slate-300 hover:text-white'}`}>About</button>
-      <button onClick={() => handleNavClick(sections.experience)} className={`px-3 py-2 rounded-md text-sm font-medium ${activeSection === 'experience' ? 'text-cyan-400' : 'text-slate-300 hover:text-white'}`}>Experience</button>
-      <button onClick={() => handleNavClick(sections.projects)} className={`px-3 py-2 rounded-md text-sm font-medium ${activeSection === 'projects' ? 'text-cyan-400' : 'text-slate-300 hover:text-white'}`}>Projects</button>
-      <button onClick={() => handleNavClick(sections.contact)} className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-black bg-cyan-400 hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-500 transition-colors">
-        Contact
-      </button>
+      <button onClick={() => handleNavClick(sections.about)} className="px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors">About</button>
+      <button onClick={() => handleNavClick(sections.experience)} className="px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors">Experience</button>
+      <button onClick={() => handleNavClick(sections.projects)} className="px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors">Projects</button>
     </>
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 bg-slate-900/70 backdrop-blur-md rounded-b-2xl px-6 border-b border-slate-400/20">
-          <div className="flex-shrink-0 cursor-pointer" onClick={() => handleNavClick(sections.home)}>
-            <span className="text-white font-bold text-xl">Abishek M</span>
-          </div>
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {navLinks}
-            </div>
-          </div>
-          <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-slate-300 hover:text-white">
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+    <header className="fixed top-0 left-0 right-0 z-50 p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <div className="flex-shrink-0 cursor-pointer" onClick={() => handleNavClick(sections.home)}>
+          <span className="text-white font-bold text-2xl font-serif">AK</span>
         </div>
-      </nav>
+        <div className="hidden md:flex items-center space-x-2">
+          {navLinks}
+          <button onClick={() => handleNavClick(sections.contact)} className="ml-4 flex items-center px-5 py-2 border border-white rounded-full text-sm text-white hover:bg-white hover:text-black transition-colors group">
+            Let's Talk <ArrowRight className="ml-2 h-4 w-4 transform transition-transform group-hover:translate-x-1" />
+          </button>
+        </div>
+        <div className="md:hidden">
+          <button onClick={() => setIsOpen(!isOpen)} className="text-slate-300 hover:text-white">
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
       {isOpen && (
-        <div className="md:hidden mt-2 mx-4">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-slate-800/80 backdrop-blur-md rounded-xl flex flex-col items-center">
-            {navLinks}
-          </div>
+        <div className="md:hidden mt-3 bg-black/80 backdrop-blur-md rounded-lg p-4 flex flex-col items-center space-y-2">
+          {navLinks}
+           <button onClick={() => handleNavClick(sections.contact)} className="w-full flex items-center justify-center px-5 py-2 border border-white rounded-full text-sm text-white hover:bg-white hover:text-black transition-colors group">
+            Let's Talk <ArrowRight className="ml-2 h-4 w-4" />
+          </button>
         </div>
       )}
     </header>
   );
 };
 
-// --- Hero Section ---
-const Hero = ({ sectionRef, contactRef }) => (
-  <section ref={sectionRef} id="home" className="min-h-screen flex items-center justify-center text-center px-4">
-    <div>
-      <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight">
-        Hi, I'm <span className="text-cyan-400">{portfolioData.name}</span>
-      </h1>
-      <h2 className="mt-4 text-xl sm:text-2xl md:text-3xl text-slate-300">
-        {portfolioData.title}
-      </h2>
-      <div className="mt-8 flex justify-center gap-4">
-         <button onClick={() => scrollToSection(contactRef)} className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-black bg-cyan-400 hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-500 transition-colors">
-          Get In Touch
-        </button>
-        <a href={portfolioData.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 border border-slate-600 text-base font-medium rounded-full text-white bg-slate-800/40 hover:bg-slate-700/60 transition-colors">
-          <Github className="mr-2 -ml-1 h-5 w-5" />
-          GitHub
-        </a>
+const Hero = ({ sectionRef, onArrowClick }) => (
+  <section ref={sectionRef} id="home" className="min-h-screen flex items-center px-4 relative">
+    <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h1 className="text-5xl sm:text-6xl md:text-7xl text-white font-serif">
+          {portfolioData.name}
+        </h1>
+        <p className="mt-4 text-xl sm:text-2xl text-slate-300">{portfolioData.degree}</p>
+        <p className="mt-6 text-lg text-slate-400 max-w-xl">
+          Seeking full-time roles in <span className="text-accent-400">Machine Learning</span>, <span className="text-accent-400">Backend Development</span>, and <span className="text-accent-400">Data Science</span>.
+        </p>
+      </div>
+      <div className="hidden md:flex items-center justify-center">
+        <InteractiveMonogram/>
+      </div>
+    </div>
+     <div className="absolute bottom-10 left-0 right-0 px-4">
+      <div className="container mx-auto">
+        <div className="cursor-pointer w-fit" onClick={onArrowClick}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-bounce">
+            <path d="M12 4V20M12 20L18 14M12 20L6 14" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
       </div>
     </div>
   </section>
 );
 
-// --- About Section ---
-const About = ({ sectionRef }) => (
+const About = ({ sectionRef, onButtonClick }) => (
   <section ref={sectionRef} id="about" className="py-24 sm:py-32">
-    <GlassCard>
-      <h2 className="text-3xl font-bold text-white mb-6">About Me</h2>
-      <p className="text-slate-300 leading-relaxed mb-8">{portfolioData.about}</p>
-      <h3 className="text-2xl font-bold text-white mb-6">Core Skills</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {portfolioData.skills.map(skillCategory => (
-          <div key={skillCategory.name}>
-            <h4 className="font-semibold text-cyan-400 mb-3">{skillCategory.name}</h4>
-            <ul className="space-y-2">
-              {skillCategory.items.map(item => (
-                <li key={item} className="text-slate-300">{item}</li>
-              ))}
-            </ul>
+    <div className="container mx-auto px-4 sm:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <h2 className="text-4xl md:text-5xl font-serif text-white leading-tight mb-8">About Me</h2>
+          <p className="text-slate-300 leading-relaxed">{portfolioData.about}</p>
+          <div className="mt-10">
+            {portfolioData.skills.map(skillCategory => (
+              <div key={skillCategory.name} className="mb-6">
+                <h4 className="font-semibold text-accent-400 mb-3">{skillCategory.name}</h4>
+                <div className="flex flex-wrap gap-2">
+                   {skillCategory.items.map(item => (
+                    <span key={item} className="bg-gray-800 text-slate-300 text-sm font-medium px-3 py-1 rounded-md">{item}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <button onClick={onButtonClick} className="mt-8 flex items-center px-5 py-2 border border-white rounded-full text-sm text-white hover:bg-white hover:text-black transition-colors group">
+            View My Experience <ArrowRight className="ml-2 h-4 w-4 transform transition-transform group-hover:translate-x-1" />
+          </button>
+        </div>
+        <div className="flex items-center justify-center">
+           <img src={`${process.env.PUBLIC_URL}/images/pointer.png`} alt="Abishek M" className="w-full max-w-sm h-auto rounded-lg shadow-2xl"/>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const Experience = ({ sectionRef }) => (
+  <section ref={sectionRef} id="experience" className="py-24 sm:py-32 bg-gray-900/50">
+    <div className="container mx-auto px-4">
+      <h2 className="text-4xl md:text-5xl font-serif text-white text-center mb-20">Experience</h2>
+      <div className="relative max-w-5xl mx-auto">
+        <div className="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-gray-700 hidden md:block" aria-hidden="true"></div>
+        {portfolioData.experience.map((job, index) => (
+          <div key={index} className={`relative md:grid md:grid-cols-2 md:gap-12 items-center ${index > 0 ? 'mt-20' : ''}`}>
+            {/* --- Left Side (even index) or Right Side (odd index) --- */}
+            <div className={`text-center md:text-left ${index % 2 !== 0 ? 'md:order-2 md:text-left' : 'md:text-right'}`}>
+                <div className="text-5xl md:text-7xl font-serif text-accent-400 mb-2">{job.date}</div>
+                <div className="text-xl text-slate-400">{job.location}</div>
+            </div>
+            
+            {/* --- Card --- */}
+            <div className={`relative mt-4 md:mt-0 ${index % 2 !== 0 ? 'md:order-1' : ''}`}>
+              <div className={`absolute top-8 w-4 h-4 bg-accent-500 rounded-full hidden md:block ${index % 2 !== 0 ? 'left-full -ml-2' : 'right-full -mr-2'}`} aria-hidden="true"></div>
+               <div className="bg-gray-800/50 p-8 rounded-lg border border-gray-700 shadow-2xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center flex-shrink-0 mr-4">
+                      <Building className="text-gray-500"/>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-semibold text-white">{job.role}</h3>
+                    <p className="text-lg font-normal text-slate-300">{job.company}</p>
+                  </div>
+                </div>
+                <p className="mt-4 text-slate-400 leading-relaxed">{job.description}</p>
+               </div>
+            </div>
           </div>
         ))}
       </div>
-    </GlassCard>
+    </div>
   </section>
 );
 
-// --- Experience Section ---
-const Experience = ({ sectionRef }) => (
-  <section ref={sectionRef} id="experience" className="py-24 sm:py-32">
-    <h2 className="text-3xl font-bold text-white mb-12 text-center">Professional Experience</h2>
-    <div className="relative border-l-2 border-cyan-800/50 ml-6 md:ml-0 md:border-l-0 md:border-t-2 md:w-full md:flex">
-        <div className="absolute top-0 -left-[9px] w-4 h-4 bg-cyan-600 rounded-full md:hidden"></div>
-        {portfolioData.experience.map((job, index) => (
-            <div key={index} className="mb-10 ml-8 md:ml-0 md:mb-0 md:w-1/2 md:relative md:pt-8">
-                <div className="md:absolute md:top-0 md:left-1/2 md:-translate-x-1/2 md:-mt-2">
-                    <div className="hidden md:block w-4 h-4 bg-cyan-600 rounded-full ring-8 ring-slate-900"></div>
-                </div>
-                <div className={`md:w-full ${index % 2 === 0 ? 'md:text-right md:pr-8' : 'md:text-left md:pl-8'}`}>
-                    <GlassCard className="text-left">
-                        <h3 className="text-xl font-semibold text-white">{job.role}</h3>
-                        <p className="text-md font-normal text-cyan-400">{job.company}</p>
-                        <time className="block mb-2 text-sm font-normal leading-none text-slate-400">{job.date}</time>
-                        <p className="text-base font-normal text-slate-300">{job.description}</p>
-                    </GlassCard>
-                </div>
+
+const ProjectCard = ({ number, title, description, link }) => (
+    <a href={link} target="_blank" rel="noopener noreferrer" className="block border border-gray-800 rounded-3xl p-8 hover:border-accent-500 transition-colors duration-300 group bg-gray-900/30">
+        <div className="flex flex-col h-full">
+            <span className="text-5xl font-serif text-white">{number.toString().padStart(2, '0')}</span>
+            <div className="mt-6 flex-grow">
+                <h3 className="text-2xl font-medium text-white">{title}</h3>
+                <p className="mt-4 text-slate-400 leading-relaxed">{description}</p>
             </div>
-        ))}
-    </div>
-</section>
+            <div className="mt-6 text-right text-accent-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <ArrowRight/>
+            </div>
+        </div>
+    </a>
 );
 
-
-// --- Projects Section ---
-const Projects = ({ sectionRef }) => (
+const Projects = ({ sectionRef, projects }) => (
   <section ref={sectionRef} id="projects" className="py-24 sm:py-32">
-    <h2 className="text-3xl font-bold text-white mb-12 text-center">Featured Projects</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {portfolioData.projects.map(project => (
-        <GlassCard key={project.title} className="flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300">
-          <div className="flex-grow">
-            <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
-            <p className="text-slate-300 mb-4 flex-grow">{project.description}</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {project.tags.map(tag => (
-                <span key={tag} className="bg-cyan-900/50 text-cyan-300 text-xs font-medium px-2.5 py-0.5 rounded-full">{tag}</span>
-              ))}
-            </div>
-          </div>
-          <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 font-semibold mt-auto">
-            View on GitHub &rarr;
-          </a>
-        </GlassCard>
-      ))}
-    </div>
+     <div className="container mx-auto px-4">
+      <h2 className="text-4xl md:text-5xl font-serif text-white text-center mb-16">Projects</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {projects.map((project, index) => (
+          <ProjectCard key={project.title} number={index + 1} {...project} />
+        ))}
+      </div>
+     </div>
   </section>
 );
 
-// --- Contact Section ---
 const Contact = ({ sectionRef }) => (
   <section ref={sectionRef} id="contact" className="py-24 sm:py-32">
-    <GlassCard className="text-center">
-      <h2 className="text-3xl font-bold text-white mb-4">Get In Touch</h2>
+    <div className="container mx-auto px-4 text-center">
+      <h2 className="text-4xl md:text-5xl font-serif text-white mb-4">Get In Touch</h2>
       <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
-        I'm currently open to new opportunities and collaborations. Whether you have a question or just want to say hi, feel free to reach out. My inbox is always open!
+        I'm currently open to new opportunities and collaborations. My inbox is always open!
       </p>
-      <a href={`mailto:${portfolioData.email}`} className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-full shadow-sm text-black bg-cyan-400 hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-500 transition-colors">
-        <Mail className="mr-3 h-6 w-6" /> Say Hello
+      <a href={`mailto:${portfolioData.email}`} className="inline-flex items-center px-8 py-3 border border-accent-400 text-lg font-medium rounded-full text-accent-400 hover:bg-accent-400 hover:text-black transition-colors">
+        <Mail className="mr-3 h-5 w-5" /> Say Hello
       </a>
-    </GlassCard>
+    </div>
   </section>
 );
 
-// --- Footer ---
 const Footer = () => (
   <footer className="py-8 text-center text-slate-400">
-    <div className="flex justify-center gap-6 mb-4">
-      <a href={portfolioData.github} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors"><Github size={24} /></a>
-      <a href={portfolioData.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors"><Linkedin size={24} /></a>
-      <a href={`mailto:${portfolioData.email}`} className="hover:text-white transition-colors"><Mail size={24} /></a>
+    <div className="container mx-auto px-4">
+      <div className="flex justify-center gap-6 mb-4">
+        <a href={portfolioData.github} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="GitHub"><Github size={24} /></a>
+        <a href={portfolioData.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="LinkedIn"><Linkedin size={24} /></a>
+        <a href={portfolioData.kaggle} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Kaggle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M15.33,3.33h-10L0,13.11,5.33,23h10l5.34-9.89ZM12,18.89a6.89,6.89,0,1,1,6.89-6.89A6.89,6.89,0,0,1,12,18.89Z"/></svg>
+        </a>
+        <a href={portfolioData.huggingface} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Hugging Face">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.28,15.22a2.3,2.3,0,0,1-2.29-2.29V11.41a2.3,2.3,0,0,1,4.58,0v1.52a2.3,2.3,0,0,1-2.29,2.29ZM3.72,15.22a2.3,2.3,0,0,1-2.29-2.29V11.41a2.3,2.3,0,0,1,4.58,0v1.52A2.3,2.3,0,0,1,3.72,15.22ZM15.22,20.28a2.3,2.3,0,0,1-2.29-2.29V3.72a2.3,2.3,0,0,1,4.58,0V18A2.3,2.3,0,0,1,15.22,20.28ZM8.78,20.28a2.3,2.3,0,0,1-2.29-2.29V3.72a2.3,2.3,0,1,1,4.58,0V18A2.3,2.3,0,0,1,8.78,20.28Z"/></svg>
+        </a>
+        <a href={`mailto:${portfolioData.email}`} className="hover:text-white transition-colors" aria-label="Email"><Mail size={24} /></a>
+      </div>
+      <p className="text-sm text-slate-500">© {new Date().getFullYear()} Abishek M. All Rights Reserved.</p>
     </div>
-    <p className="text-sm text-slate-500">© 2025 Abishek M. All Rights Reserved.</p>
   </footer>
 );
 
@@ -276,38 +330,27 @@ export default function App() {
 
   useEffect(() => {
     const checkScrollTop = () => {
-      if (!showScrollTop && window.pageYOffset > 400) {
-        setShowScrollTop(true);
-      } else if (showScrollTop && window.pageYOffset <= 400) {
-        setShowScrollTop(false);
-      }
+      setShowScrollTop(window.pageYOffset > 400);
     };
     window.addEventListener('scroll', checkScrollTop, { passive: true });
     return () => window.removeEventListener('scroll', checkScrollTop);
-  }, [showScrollTop]);
+  }, []);
 
   return (
-    <div className="bg-slate-900 text-slate-100 font-sans leading-normal tracking-wide">
-      {/* Animated Gradient Background */}
-      <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-slate-900 to-black"></div>
-          <div 
-            className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full filter blur-3xl opacity-30 animate-blob"
-            style={{animationDelay: '0s'}}>
-          </div>
-          <div 
-            className="absolute top-1/2 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full filter blur-3xl opacity-30 animate-blob"
-            style={{animationDelay: '4s'}}>
-          </div>
-      </div>
-      
+    <div className="bg-black text-slate-100 font-sans leading-normal tracking-wide">
       <div className="relative z-10">
         <Header sections={sections} />
-        <main className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Hero sectionRef={homeRef} contactRef={contactRef} />
-          <About sectionRef={aboutRef} />
+        <main>
+          <Hero 
+            sectionRef={homeRef} 
+            onArrowClick={() => scrollToSection(aboutRef)}
+          />
+          <About 
+            sectionRef={aboutRef} 
+            onButtonClick={() => scrollToSection(experienceRef)} 
+          />
           <Experience sectionRef={experienceRef} />
-          <Projects sectionRef={projectsRef} />
+          <Projects sectionRef={projectsRef} projects={portfolioData.projects} />
           <Contact sectionRef={contactRef} />
         </main>
         <Footer />
@@ -316,7 +359,7 @@ export default function App() {
       {showScrollTop && (
         <button
           onClick={() => scrollToSection(homeRef)}
-          className="fixed bottom-8 right-8 bg-cyan-500/50 text-white p-3 rounded-full shadow-lg hover:bg-cyan-500 transition-colors"
+          className="fixed bottom-8 right-8 bg-white/20 text-white p-3 rounded-full shadow-lg hover:bg-white/30 transition-colors backdrop-blur-sm"
           aria-label="Scroll to top"
         >
           <ArrowUp size={24} />
