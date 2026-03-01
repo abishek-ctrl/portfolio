@@ -20,6 +20,7 @@ export const InteractiveMonogram = ({ systemState, setSystemState }) => {
 
     return (
         <motion.div
+            id="monogram"
             className="w-full h-64 md:h-80 relative flex flex-col items-center justify-center cursor-pointer select-none group"
             onClick={handleClick}
             whileHover={{ scale: 1.05 }}

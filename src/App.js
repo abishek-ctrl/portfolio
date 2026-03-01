@@ -25,6 +25,7 @@ const scrollToSection = (ref) => {
 export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [systemState, setSystemState] = useState(200);
+  const [clickSpam, setClickSpam] = useState([]);
 
   const homeRef = useRef(null);
   const aboutRef = useRef(null);
@@ -53,13 +54,31 @@ export default function App() {
   const is429 = systemState === 429;
   const is500 = systemState === 500;
 
+  const handleGlobalClickCapture = (e) => {
+    if (is429) {
+      if (e.target.closest('#monogram')) return; // Allow monogram interaction
+
+      e.stopPropagation();
+      e.preventDefault();
+
+      const newClick = { id: Date.now() + Math.random(), x: e.clientX, y: e.clientY };
+      setClickSpam(prev => [...prev, newClick]);
+
+      setTimeout(() => {
+        setClickSpam(prev => prev.filter(c => c.id !== newClick.id));
+      }, 1500);
+    }
+  };
+
   return (
-    <div className={`bg-black text-slate-100 font-sans leading-normal tracking-wide selection:bg-accent-500 selection:text-white overflow-x-hidden min-h-screen transition-all duration-700 
+    <div
+      className={`bg-black text-slate-100 font-sans leading-normal tracking-wide selection:bg-accent-500 selection:text-white overflow-x-hidden min-h-screen transition-all duration-700 
       ${is500 ? 'bg-red-950/20 pointer-events-none' : ''} 
       ${is403 ? 'sepia-[.8] hue-rotate-[250deg] saturate-200 invert-[0.8] mix-blend-difference' : ''} 
       ${is429 ? 'blur-[2px] opacity-70 transition-none scale-[0.98]' : ''}
     `}
       style={is429 ? { transition: 'none', transform: `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)` } : {}}
+      onClickCapture={handleGlobalClickCapture}
     >
       {/* Conditional CRT scanline overlay mimicking a broken screen globally */}
       {is500 && (
@@ -156,6 +175,23 @@ export default function App() {
             <ArrowUp size={24} className="group-hover:-translate-y-1 transition-transform" />
           </motion.button>
         )}
+      </AnimatePresence>
+
+      {/* 429 Error Click Spam Viewer */}
+      <AnimatePresence>
+        {clickSpam.map(click => (
+          <motion.div
+            key={click.id}
+            className="fixed z-[9999] text-red-500 font-mono font-bold text-sm md:text-base pointer-events-none drop-shadow-md select-none whitespace-nowrap"
+            style={{ left: click.x, top: click.y, x: '-50%', y: '-100%' }}
+            initial={{ opacity: 0, y: -10, scale: 0.8 }}
+            animate={{ opacity: 1, y: -40, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            ERR_429: TOO MANY REQUESTS
+          </motion.div>
+        ))}
       </AnimatePresence>
     </div>
   );
