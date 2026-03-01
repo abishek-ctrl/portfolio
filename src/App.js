@@ -80,45 +80,79 @@ export default function App() {
   };
 
   return (
-    <div
-      className={`bg-black text-slate-100 font-sans leading-normal tracking-wide selection:bg-accent-500 selection:text-white overflow-x-hidden min-h-screen transition-all duration-700 
+    <>
+      <div
+        className={`bg-black text-slate-100 font-sans leading-normal tracking-wide selection:bg-accent-500 selection:text-white overflow-x-hidden min-h-screen transition-all duration-700 
       ${is500 ? 'bg-red-950/20 pointer-events-none' : ''} 
       ${is403 ? 'sepia-[.8] hue-rotate-[250deg] saturate-200 invert-[0.8] mix-blend-difference' : ''} 
       ${is429 ? 'blur-[2px] opacity-70 transition-none scale-[0.98]' : ''}
     `}
-      style={is429 ? { transition: 'none', transform: `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)` } : {}}
-      onClickCapture={handleGlobalClickCapture}
-    >
-      {/* Conditional CRT scanline overlay mimicking a broken screen globally */}
-      {is500 && (
-        <div className="fixed inset-0 z-[100] pointer-events-none opacity-20" style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #f00 2px, #f00 4px)' }}></div>
-      )}
+        style={is429 ? { transition: 'none', transform: `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)` } : {}}
+        onClickCapture={handleGlobalClickCapture}
+      >
+        {/* Conditional CRT scanline overlay mimicking a broken screen globally */}
+        {is500 && (
+          <div className="fixed inset-0 z-[100] pointer-events-none opacity-20" style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #f00 2px, #f00 4px)' }}></div>
+        )}
 
-      <div className={`relative z-10 antialiased ${(is500 || is429) ? 'pointer-events-none' : ''}`}>
-        <AnimatePresence>
-          {!is404 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className={`
+        <div className={`relative z-10 antialiased ${(is500 || is429) ? 'pointer-events-none' : ''}`}>
+          <AnimatePresence>
+            {!is404 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className={`
                 ${is403 ? 'rotate-1' : ''}
               `}
-            >
-              <Header sections={sections} scrollToSection={scrollToSection} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+              >
+                <Header sections={sections} scrollToSection={scrollToSection} />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        <main>
-          <Hero
-            sectionRef={homeRef}
-            onArrowClick={() => scrollToSection(aboutRef)}
-            portfolioData={portfolioData}
-            systemState={systemState}
-            setSystemState={setSystemState}
-          />
+          <main>
+            <Hero
+              sectionRef={homeRef}
+              onArrowClick={() => scrollToSection(aboutRef)}
+              portfolioData={portfolioData}
+              systemState={systemState}
+              setSystemState={setSystemState}
+            />
+
+            <AnimatePresence>
+              {!is404 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`
+                  ${is403 ? '-rotate-1 select-none' : ''}
+                `}
+                >
+                  <About
+                    sectionRef={aboutRef}
+                    onButtonClick={() => scrollToSection(experienceRef)}
+                    portfolioData={portfolioData}
+                  />
+                  <Experience
+                    sectionRef={experienceRef}
+                    portfolioData={portfolioData}
+                  />
+                  <Projects
+                    sectionRef={projectsRef}
+                    projects={portfolioData.projects}
+                  />
+                  <Contact
+                    sectionRef={contactRef}
+                    email={portfolioData.email}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </main>
 
           <AnimatePresence>
             {!is404 && (
@@ -128,46 +162,14 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
                 className={`
-                  ${is403 ? '-rotate-1 select-none' : ''}
-                `}
+                ${is403 ? 'rotate-2' : ''}
+              `}
               >
-                <About
-                  sectionRef={aboutRef}
-                  onButtonClick={() => scrollToSection(experienceRef)}
-                  portfolioData={portfolioData}
-                />
-                <Experience
-                  sectionRef={experienceRef}
-                  portfolioData={portfolioData}
-                />
-                <Projects
-                  sectionRef={projectsRef}
-                  projects={portfolioData.projects}
-                />
-                <Contact
-                  sectionRef={contactRef}
-                  email={portfolioData.email}
-                />
+                <Footer portfolioData={portfolioData} />
               </motion.div>
             )}
           </AnimatePresence>
-        </main>
-
-        <AnimatePresence>
-          {!is404 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className={`
-                ${is403 ? 'rotate-2' : ''}
-              `}
-            >
-              <Footer portfolioData={portfolioData} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -231,6 +233,6 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
