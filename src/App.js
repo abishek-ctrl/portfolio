@@ -26,6 +26,7 @@ export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [systemState, setSystemState] = useState(200);
   const [clickSpam, setClickSpam] = useState([]);
+  const [showAccessDenied, setShowAccessDenied] = useState(false);
 
   const homeRef = useRef(null);
   const aboutRef = useRef(null);
@@ -55,9 +56,17 @@ export default function App() {
   const is500 = systemState === 500;
 
   const handleGlobalClickCapture = (e) => {
-    if (is429) {
-      if (e.target.closest('#monogram')) return; // Allow monogram interaction
+    if (e.target.closest('#monogram')) return; // Allow monogram interaction
 
+    if (is403) {
+      e.stopPropagation();
+      e.preventDefault();
+      setShowAccessDenied(true);
+      setTimeout(() => setShowAccessDenied(false), 2000);
+      return;
+    }
+
+    if (is429) {
       e.stopPropagation();
       e.preventDefault();
 
@@ -85,7 +94,7 @@ export default function App() {
         <div className="fixed inset-0 z-[100] pointer-events-none opacity-20" style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #f00 2px, #f00 4px)' }}></div>
       )}
 
-      <div className="relative z-10 antialiased">
+      <div className={`relative z-10 antialiased ${(is500 || is429) ? 'pointer-events-none' : ''}`}>
         <AnimatePresence>
           {!is404 && (
             <motion.div
@@ -165,7 +174,7 @@ export default function App() {
         {showScrollTop && !is404 && (
           <motion.button
             onClick={() => scrollToSection(homeRef)}
-            className={`fixed bottom-8 right-8 bg-gray-900 border border-gray-800 text-white p-4 rounded-full shadow-2xl hover:bg-gray-800 transition-colors z-50 group ${is500 ? 'pointer-events-none' : ''}`}
+            className={`fixed bottom-8 right-8 bg-gray-900 border border-gray-800 text-white p-4 rounded-full shadow-2xl hover:bg-gray-800 transition-colors z-50 group ${(is500 || is429) ? 'pointer-events-none' : ''}`}
             aria-label="Scroll to top"
             initial={{ opacity: 0, scale: 0.5, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -192,6 +201,35 @@ export default function App() {
             ERR_429: TOO MANY REQUESTS
           </motion.div>
         ))}
+      </AnimatePresence>
+
+      {/* 403 Access Denied Overlay */}
+      <AnimatePresence>
+        {showAccessDenied && (
+          <motion.div
+            className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none bg-black/40 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div
+              className="text-white font-mono font-black text-5xl md:text-7xl tracking-widest bg-red-600/90 px-12 py-8 rounded-lg border-4 border-red-500 uppercase overflow-hidden relative"
+              initial={{ scale: 0.8, y: 50, filter: 'blur(10px)' }}
+              animate={{
+                scale: [1, 1.05, 1],
+                y: 0,
+                filter: 'blur(0px)',
+                x: [-5, 5, -5, 5, 0] // Shake effect
+              }}
+              exit={{ scale: 1.1, opacity: 0, filter: 'blur(10px)' }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="absolute inset-0 bg-black/10 mix-blend-overlay" style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
+              <span className="relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">ACCESS DENIED</span>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );

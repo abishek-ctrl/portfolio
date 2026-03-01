@@ -14,6 +14,7 @@ export const InteractiveMonogram = ({ systemState, setSystemState }) => {
     const activeState = states[currentIndex] || states[0];
 
     const handleClick = () => {
+        if (systemState === 500) return; // Unrecoverable state
         const nextIndex = (currentIndex + 1) % states.length;
         setSystemState(states[nextIndex].code);
     };
@@ -21,7 +22,7 @@ export const InteractiveMonogram = ({ systemState, setSystemState }) => {
     return (
         <motion.div
             id="monogram"
-            className="w-full h-64 md:h-80 relative flex flex-col items-center justify-center cursor-pointer select-none group"
+            className="w-full h-64 md:h-80 relative flex flex-col items-center justify-center cursor-pointer select-none group pointer-events-auto"
             onClick={handleClick}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -56,8 +57,8 @@ export const InteractiveMonogram = ({ systemState, setSystemState }) => {
                     </motion.div>
                 </AnimatePresence>
 
-                <div className="absolute -bottom-12 text-xs text-slate-500/50 opacity-0 group-hover:opacity-100 transition-opacity font-sans">
-                    Click to override system state
+                <div className={`absolute -bottom-12 text-xs font-sans transition-all duration-300 ${systemState === 500 ? 'text-red-500 animate-[pulse_1s_ease-in-out_infinite] opacity-100 font-bold tracking-widest' : 'text-slate-500/50 opacity-0 group-hover:opacity-100'}`}>
+                    {systemState === 500 ? 'FATAL ERROR - PLEASE RELOAD THE PAGE' : 'Click to override system state'}
                 </div>
             </div>
         </motion.div>
